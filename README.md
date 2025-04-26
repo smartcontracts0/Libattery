@@ -1,4 +1,4 @@
-# Blockchain-Enabled Sustainability of Li-ion Battery Supply Chain
+# Blockchain-enabled Sustainability of Li-ion Batteries Supply Chain: Tracking and Sourcing Eco-Friendly Materials
 
 This repository provides the complete smart contracts, testing files, and security analysis reports for the research paper:  
 **"Blockchain-enabled Sustainability of Li-ion Batteries Supply Chain: Tracking and Sourcing Eco-Friendly Materials."**
