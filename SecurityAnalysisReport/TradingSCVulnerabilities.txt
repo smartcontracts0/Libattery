@@ -1,0 +1,116 @@
+
+Reentrancy in TradingContract.listBattery(uint256,uint256) (Trading.sol#430-436):
+        External calls:
+        - onlyRetailer() (Trading.sol#430)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#365)
+        State variables written after the call(s):
+        - nonReentrant() (Trading.sol#430)
+                - _status = _NOT_ENTERED (Trading.sol#71)
+                - _status = _ENTERED (Trading.sol#65)
+        - batteryCount ++ (Trading.sol#432)
+        - batteryNFTs[batteryLotCount] = batteryNFT(batteryCount,_tokenId,_price * 1000000000000000000,address(msg.sender),false) (Trading.sol#433)
+Reentrancy in TradingContract.listBatteryLot(uint256,uint256) (Trading.sol#408-414):
+        External calls:
+        - onlyManufacturer() (Trading.sol#408)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#359)
+        State variables written after the call(s):
+        - nonReentrant() (Trading.sol#408)
+                - _status = _NOT_ENTERED (Trading.sol#71)
+                - _status = _ENTERED (Trading.sol#65)
+        - batteryLotCount ++ (Trading.sol#410)
+        - batteryLotNFTs[batteryLotCount] = batteryLotNFT(batteryLotCount,_tokenId,_price * 1000000000000000000,address(msg.sender),false) (Trading.sol#411)
+Reentrancy in TradingContract.listRefinedMineralsPackage(uint256,uint256) (Trading.sol#381-389):
+        External calls:
+        - onlyRefinery() (Trading.sol#381)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#343)
+        State variables written after the call(s):
+        - nonReentrant() (Trading.sol#381)
+                - _status = _NOT_ENTERED (Trading.sol#71)
+                - _status = _ENTERED (Trading.sol#65)
+        - refinedMineralNFTs[refinedMineralsCount] = refinedMineralNFT(refinedMineralsCount,_tokenId,_price * 1000000000000000000,address(msg.sender),false) (Trading.sol#385)
+        - refinedMineralsCount ++ (Trading.sol#384)
+Reentrancy in TradingContract.purchaseBatteryLot(uint256) (Trading.sol#416-428):
+        External calls:
+        - onlyRetailer() (Trading.sol#416)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#365)
+        State variables written after the call(s):
+        - nonReentrant() (Trading.sol#416)
+                - _status = _NOT_ENTERED (Trading.sol#71)
+                - _status = _ENTERED (Trading.sol#65)
+        - BLOTNFT.sold = true (Trading.sol#424)
+Reentrancy in TradingContract.purchaseRefinedMineralsPackage(uint256) (Trading.sol#394-406):
+        External calls:
+        - onlyManufacturer() (Trading.sol#394)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#359)
+        State variables written after the call(s):
+        - nonReentrant() (Trading.sol#394)
+                - _status = _NOT_ENTERED (Trading.sol#71)
+                - _status = _ENTERED (Trading.sol#65)
+        - RMNFT.sold = true (Trading.sol#401)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+
+Reentrancy in TradingContract.listBattery(uint256,uint256) (Trading.sol#430-436):
+        External calls:
+        - Batteries.transferFrom(msg.sender,address(this),_tokenId) (Trading.sol#434)
+        - onlyRetailer() (Trading.sol#430)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#365)
+        Event emitted after the call(s):
+        - BatteryNFTListed(batteryCount,_tokenId,_price * 1000000000000000000,msg.sender) (Trading.sol#435)
+Reentrancy in TradingContract.listBatteryLot(uint256,uint256) (Trading.sol#408-414):
+        External calls:
+        - BatteriesLOT.transferFrom(msg.sender,address(this),_tokenId) (Trading.sol#412)
+        - onlyManufacturer() (Trading.sol#408)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#359)
+        Event emitted after the call(s):
+        - BatteryLotNFTListed(batteryLotCount,_tokenId,_price * 1000000000000000000,msg.sender) (Trading.sol#413)
+Reentrancy in TradingContract.listRefinedMineralsPackage(uint256,uint256) (Trading.sol#381-389):
+        External calls:
+        - RefinedMinerals.transferFrom(msg.sender,address(this),_tokenId) (Trading.sol#386)
+        - onlyRefinery() (Trading.sol#381)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#343)
+        Event emitted after the call(s):
+        - RefinedMineralNFTListed(refinedMineralsCount,_tokenId,_price * 1000000000000000000,msg.sender) (Trading.sol#387)
+Reentrancy in TradingContract.purchaseBattery(uint256) (Trading.sol#438-450):
+        External calls:
+        - Batteries.transferFrom(address(this),msg.sender,BNFT.tokenID) (Trading.sol#448)
+        External calls sending eth:
+        - address(BNFT.seller).transfer(BNFT.price) (Trading.sol#447)
+        Event emitted after the call(s):
+        - BatteryNFTPurchased(BNFT.itemId,BNFT.tokenID,BNFT.price,BNFT.seller,msg.sender) (Trading.sol#449)
+Reentrancy in TradingContract.purchaseBatteryLot(uint256) (Trading.sol#416-428):
+        External calls:
+        - BatteriesLOT.transferFrom(address(this),msg.sender,BLOTNFT.tokenID) (Trading.sol#426)
+        - onlyRetailer() (Trading.sol#416)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#365)
+        External calls sending eth:
+        - address(BLOTNFT.seller).transfer(BLOTNFT.price) (Trading.sol#425)
+        Event emitted after the call(s):
+        - BatteryLotNFTPurchased(BLOTNFT.itemId,BLOTNFT.tokenID,BLOTNFT.price,BLOTNFT.seller,msg.sender) (Trading.sol#427)
+Reentrancy in TradingContract.purchaseRefinedMineralsPackage(uint256) (Trading.sol#394-406):
+        External calls:
+        - RefinedMinerals.transferFrom(address(this),msg.sender,RMNFT.tokenID) (Trading.sol#402)
+        - onlyManufacturer() (Trading.sol#394)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Trading.sol#359)
+        External calls sending eth:
+        - address(RMNFT.seller).transfer(RMNFT.price) (Trading.sol#404)
+        Event emitted after the call(s):
+        - RefinedMineralNFTPurchased(RMNFT.itemId,RMNFT.tokenID,RMNFT.price,RMNFT.seller,msg.sender) (Trading.sol#405)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+
+Reentrancy in TradingContract.purchaseBattery(uint256) (Trading.sol#438-450):
+        External calls:
+        - address(BNFT.seller).transfer(BNFT.price) (Trading.sol#447)
+        Event emitted after the call(s):
+        - BatteryNFTPurchased(BNFT.itemId,BNFT.tokenID,BNFT.price,BNFT.seller,msg.sender) (Trading.sol#449)
+Reentrancy in TradingContract.purchaseBatteryLot(uint256) (Trading.sol#416-428):
+        External calls:
+        - address(BLOTNFT.seller).transfer(BLOTNFT.price) (Trading.sol#425)
+        Event emitted after the call(s):
+        - BatteryLotNFTPurchased(BLOTNFT.itemId,BLOTNFT.tokenID,BLOTNFT.price,BLOTNFT.seller,msg.sender) (Trading.sol#427)
+Reentrancy in TradingContract.purchaseRefinedMineralsPackage(uint256) (Trading.sol#394-406):
+        External calls:
+        - address(RMNFT.seller).transfer(RMNFT.price) (Trading.sol#404)
+        Event emitted after the call(s):
+        - RefinedMineralNFTPurchased(RMNFT.itemId,RMNFT.tokenID,RMNFT.price,RMNFT.seller,msg.sender) (Trading.sol#405)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-4
+Trading.sol analyzed (8 contracts with 81 detectors), 14 result(s) found

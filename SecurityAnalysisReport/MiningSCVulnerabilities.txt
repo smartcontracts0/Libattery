@@ -1,0 +1,100 @@
+Reentrancy in MiningContract.approveMiningPermission(address,uint256,uint256) (Mining.sol#403-414):
+        External calls:
+        - onlyRegulatoryAuthority() (Mining.sol#403)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#364)  
+        State variables written after the call(s):
+        - leaseNumberCounter ++ (Mining.sol#407)
+        - miningApprovalStatus[_miner][_requestNumber][_location] = true (Mining.sol#408)
+        - miningLeaseDetails[_miner][_location] = MiningLease(msg.sender,_miner,leaseNumberCounter,_location,block.timestamp,leasePeriod,miningApprovalStatus[_miner][_requestNumber][_location]) (Mining.sol#410)
+Reentrancy in MiningContract.refineMinedMinerals(address,uint256) (Mining.sol#440-459):
+        External calls:
+        - onlyRefinery() (Mining.sol#440)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#376)
+        State variables written after the call(s):
+        - AvailableMinerals[_miner][MLDetails.leaseNumber] += MMDetails.mineralsQuantity (Mining.sol#446)
+        - AvailableMinerals[_miner][MLDetails.leaseNumber] %= 10 (Mining.sol#456)
+        - minedMineralsInformation[MLDetails.miner][MLDetails.leaseNumber][i].isRefined = true (Mining.sol#447)
+Reentrancy in MiningContract.requestMiningPermission(uint256,uint256) (Mining.sol#396-401):
+        External calls:
+        - onlyMiner() (Mining.sol#396)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#370)
+        State variables written after the call(s):
+        - miningApprovalRequest[msg.sender][requestNumber][_location] = _leasePeriod * 86400 (Mining.sol#398)
+        - miningRequestPending[msg.sender][requestNumber][_location] = true (Mining.sol#399)
+        - requestNumber ++ (Mining.sol#397)
+Reentrancy in MiningContract.resolveViolation(address,uint256,uint256,bool) (Mining.sol#474-490):
+        External calls:
+        - onlyRegulatoryAuthority() (Mining.sol#474)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#364)
+        State variables written after the call(s):
+        - MLDetails.approvalStatus = false (Mining.sol#485)
+        - VDetails.isViolation = _decision (Mining.sol#481)
+        - VDetails.isResolved = true (Mining.sol#482)
+Reentrancy in MiningContract.revokeMiningPermission(address,uint256) (Mining.sol#417-422):
+        External calls:
+        - onlyRegulatoryAuthority() (Mining.sol#417)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#364)
+        State variables written after the call(s):
+        - MLDetails.approvalStatus = false (Mining.sol#420)
+Reentrancy in MiningContract.storeMinedMineralsInfo(uint256,uint256) (Mining.sol#426-436):
+        External calls:
+        - onlyMiner() (Mining.sol#426)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#370)
+        State variables written after the call(s):
+        - minedMineralsInformation[msg.sender][MLDetails.leaseNumber][miningCounter[msg.sender][MLDetails.leaseNumber]] = MinedMinerals(msg.sender,_mineralsQuantity,MLDetails.miningLocation,MLDetails.leaseNumber,block.timestamp,false) (Mining.sol#431)
+        - miningCounter[msg.sender][MLDetails.leaseNumber] ++ (Mining.sol#433)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+
+Reentrancy in MiningContract.approveMiningPermission(address,uint256,uint256) (Mining.sol#403-414):
+        External calls:
+        - onlyRegulatoryAuthority() (Mining.sol#403)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#364)
+        Event emitted after the call(s):
+        - MiningPermissionApproved(msg.sender,_miner,requestNumber,_location,leasePeriod) (Mining.sol#412)
+Reentrancy in MiningContract.disposeRefinedMinerals(uint256,string) (Mining.sol#492-498):
+        External calls:
+        - RefinedMinerals.transferFrom(msg.sender,address(WasteManagement),RefinedMineralsID) (Mining.sol#494)
+        - WasteManagement._disposeItem(msg.sender,address(RefinedMinerals),RefinedMineralsID,_IPFShash) (Mining.sol#495)
+        Event emitted after the call(s):
+        - RefinedMineralsDisposed(msg.sender,RefinedMineralsID,bytes32(bytes(_IPFShash))) (Mining.sol#496)
+Reentrancy in MiningContract.refineMinedMinerals(address,uint256) (Mining.sol#440-459):
+        External calls:
+        - onlyRefinery() (Mining.sol#440)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#376)
+        Event emitted after the call(s):
+        - MinedMineralsRefined(msg.sender,MLDetails.leaseNumber,MMDetails.mineralsQuantity,block.timestamp) (Mining.sol#448)
+Reentrancy in MiningContract.requestMiningPermission(uint256,uint256) (Mining.sol#396-401):
+        External calls:
+        - onlyMiner() (Mining.sol#396)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#370)
+        Event emitted after the call(s):
+        - MiningPermissionRequest(msg.sender,requestNumber,_location) (Mining.sol#400)
+Reentrancy in MiningContract.resolveViolation(address,uint256,uint256,bool) (Mining.sol#474-490):
+        External calls:
+        - onlyRegulatoryAuthority() (Mining.sol#474)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#364)
+        Event emitted after the call(s):
+        - MiningPermissionRevoked(msg.sender,_miner,_location,Violation) (Mining.sol#486)
+        - ViolationResolution(msg.sender,_miner,_location,MLDetails.leaseNumber,_violationNumber,_decision) (Mining.sol#488)
+Reentrancy in MiningContract.revokeMiningPermission(address,uint256) (Mining.sol#417-422):
+        External calls:
+        - onlyRegulatoryAuthority() (Mining.sol#417)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#364)
+        Event emitted after the call(s):
+        - MiningPermissionRevoked(msg.sender,_miner,_location,timeexpired) (Mining.sol#421)
+Reentrancy in MiningContract.storeMinedMineralsInfo(uint256,uint256) (Mining.sol#426-436):
+        External calls:
+        - onlyMiner() (Mining.sol#426)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Mining.sol#370)
+        Event emitted after the call(s):
+        - MinedMineralsDetails(msg.sender,MLDetails.leaseNumber,MLDetails.miningLocation,_mineralsQuantity) (Mining.sol#435)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+
+MiningContract.revokeMiningPermission(address,uint256) (Mining.sol#417-422) uses timestamp for comparisons
+        Dangerous comparisons:
+        - require(bool,string)(MLDetails.approvalStatus || block.timestamp > (MLDetails.approvalTime + MLDetails.leasePeriod),The mining permission for this lease has already been revoked) (Mining.sol#419)   
+MiningContract.storeMinedMineralsInfo(uint256,uint256) (Mining.sol#426-436) uses timestamp for comparisons
+        Dangerous comparisons:
+        - require(bool,string)(block.timestamp < (MLDetails.approvalTime + MLDetails.leasePeriod),The lease period has expired) (Mining.sol#429)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp
+Mining.sol analyzed (7 contracts with 81 detectors), 15 result(s) found

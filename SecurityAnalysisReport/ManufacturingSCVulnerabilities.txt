@@ -1,0 +1,46 @@
+
+ManufacturingContract.redeemBatteries(uint256,address) (Manufacturing.sol#153-160) uses arbitrary from in transferFrom: BatteriesLOT.transferFrom(_retailer,address(this),BLot.LotID) (Manufacturing.sol#156)   
+Reference: https://github.com/trailofbits/slither/wiki/Detector-Documentation#arbitrary-send-erc20
+
+
+Reentrancy in ManufacturingContract.createBatteryLot(uint256[5],string) (Manufacturing.sol#135-151):
+        External calls:
+        - onlyManufacturer() (Manufacturing.sol#135)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Manufacturing.sol#98)
+        State variables written after the call(s):
+        - batteriesLotCount ++ (Manufacturing.sol#146)
+Reentrancy in ManufacturingContract.createBatteryLot(uint256[5],string) (Manufacturing.sol#135-151):
+        External calls:
+        - (tokenID,tokenURI) = BatteriesLOT.mintLOT(_tokenURI,_tokenIDs,msg.sender) (Manufacturing.sol#147)
+        - onlyManufacturer() (Manufacturing.sol#135)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Manufacturing.sol#98)
+        State variables written after the call(s):
+        - batteriesLotMapping[batteriesLotCount] = LotDetails(batteriesLotCount,tokenID,address(BatteriesLOT),address(msg.sender)) (Manufacturing.sol#148)
+Reentrancy in ManufacturingContract.manufactureBatteries(uint256,string) (Manufacturing.sol#123-133):
+        External calls:
+        - onlyManufacturer() (Manufacturing.sol#123)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Manufacturing.sol#98)
+        State variables written after the call(s):
+        - batteriesCount ++ (Manufacturing.sol#127)
+        - batteriesMapping[batteriesCount] = BatteryDetails(batteriesCount,_refinedMineralsID,address(Batteries),address(msg.sender)) (Manufacturing.sol#128)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+
+Reentrancy in ManufacturingContract.createBatteryLot(uint256[5],string) (Manufacturing.sol#135-151):
+        External calls:
+        - (tokenID,tokenURI) = BatteriesLOT.mintLOT(_tokenURI,_tokenIDs,msg.sender) (Manufacturing.sol#147)
+        - onlyManufacturer() (Manufacturing.sol#135)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Manufacturing.sol#98)
+        Event emitted after the call(s):
+        - BatteryLotCreated(msg.sender,tokenID,tokenURI) (Manufacturing.sol#150)
+Reentrancy in ManufacturingContract.manufactureBatteries(uint256,string) (Manufacturing.sol#123-133):
+        External calls:
+        - (tokenID,tokenURI) = Batteries.mintBattery(_tokenURI,_refinedMineralsID,msg.sender) (Manufacturing.sol#129)
+        - RefinedMinerals.updateTokenAttributes(_refinedMineralsID) (Manufacturing.sol#130)
+        - onlyManufacturer() (Manufacturing.sol#123)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Manufacturing.sol#98)
+        Event emitted after the call(s):
+        - BatteryManufactured(msg.sender,tokenID,tokenURI) (Manufacturing.sol#132)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+
+
+Manufacturing.sol analyzed (6 contracts with 81 detectors), 26 result(s) found

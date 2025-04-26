@@ -1,0 +1,13 @@
+Reentrancy in RetailingContract.disposeBattery(uint256,string) (Retailing.sol#168-173):
+        External calls:
+        - Batteries.transferFrom(msg.sender,address(WasteManagement),batteryID) (Retailing.sol#170)
+        - WasteManagement._disposeItem(msg.sender,address(Batteries),batteryID,_IPFShash) (Retailing.sol#171)
+        Event emitted after the call(s):
+        - BatteryDisposed(msg.sender,batteryID,bytes32(bytes(_IPFShash))) (Retailing.sol#172)
+Reentrancy in RetailingContract.redeemBatteries(uint256) (Retailing.sol#162-166):
+        External calls:
+        - Manufacturing.redeemBatteries(_LotCount,msg.sender) (Retailing.sol#164)
+        Event emitted after the call(s):
+        - BatteriesRedeemed(msg.sender,_LotCount) (Retailing.sol#165)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+Retailing.sol analyzed (7 contracts with 81 detectors), 2 result(s) found

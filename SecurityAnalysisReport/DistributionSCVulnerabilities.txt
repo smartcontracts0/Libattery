@@ -1,0 +1,52 @@
+Reentrancy in DistributionContract.endBatteryLotDelivery(address,uint256) (Distribution.sol#128-137):
+        External calls:
+        - onlyDistributor() (Distribution.sol#128)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        State variables written after the call(s):
+        - bLotState[batteryLotID] = batteryLotState.Delivered (Distribution.sol#134)
+Reentrancy in DistributionContract.endRefinedMineralsDelivery(address,uint256) (Distribution.sol#105-114):
+        External calls:
+        - onlyDistributor() (Distribution.sol#105)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        State variables written after the call(s):
+        - rMState[refinedMineralsID] = refinedMineralsState.Delivered (Distribution.sol#111)
+Reentrancy in DistributionContract.startBatteryLotDelivery(address,uint256) (Distribution.sol#117-124):
+        External calls:
+        - onlyDistributor() (Distribution.sol#117)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        State variables written after the call(s):
+        - bLotState[batteryLotID] = batteryLotState.EnRoute (Distribution.sol#121)
+Reentrancy in DistributionContract.startRefinedMineralsDelivery(address,uint256) (Distribution.sol#95-102):
+        External calls:
+        - onlyDistributor() (Distribution.sol#95)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        State variables written after the call(s):
+        - rMState[refinedMineralsID] = refinedMineralsState.EnRoute (Distribution.sol#99)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+
+Reentrancy in DistributionContract.endBatteryLotDelivery(address,uint256) (Distribution.sol#128-137):
+        External calls:
+        - onlyDistributor() (Distribution.sol#128)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        Event emitted after the call(s):
+        - BatteryLotDelivered(msg.sender,_receiver,batteryLotID) (Distribution.sol#136)
+Reentrancy in DistributionContract.endRefinedMineralsDelivery(address,uint256) (Distribution.sol#105-114):
+        External calls:
+        - onlyDistributor() (Distribution.sol#105)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        Event emitted after the call(s):
+        - RefinedMineralsDelivered(msg.sender,_receiver,refinedMineralsID) (Distribution.sol#113)
+Reentrancy in DistributionContract.startBatteryLotDelivery(address,uint256) (Distribution.sol#117-124):
+        External calls:
+        - onlyDistributor() (Distribution.sol#117)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        Event emitted after the call(s):
+        - BatteryLotEnRoute(msg.sender,_receiver,batteryLotID) (Distribution.sol#123)
+Reentrancy in DistributionContract.startRefinedMineralsDelivery(address,uint256) (Distribution.sol#95-102):
+        External calls:
+        - onlyDistributor() (Distribution.sol#95)
+                - (entitytype,isRegistered) = Registration.getEntity(msg.sender) (Distribution.sol#78)
+        Event emitted after the call(s):
+        - RefinedMineralsEnRoute(msg.sender,_receiver,refinedMineralsID) (Distribution.sol#101)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3
+Distribution.sol analyzed (5 contracts with 81 detectors), 8 result(s) found
